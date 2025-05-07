@@ -1,10 +1,13 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
 	View,
 	ScrollView,
 	Image,
 	TouchableOpacity,
 	ActivityIndicator,
+	FlatList,
+	Modal,
+	Pressable,
 } from 'react-native';
 import {Text} from '@/components/ui/Text';
 import {useGlobalStore} from '@/context/store';
@@ -17,23 +20,36 @@ import {
 } from '@/services/apis/products';
 import {checkout} from '@/services/apis/orders';
 import {amountFormat} from '@/utils';
-import {Ionicons, MaterialCommunityIcons} from '@expo/vector-icons';
+import {
+	Feather,
+	Ionicons,
+	MaterialCommunityIcons,
+	MaterialIcons,
+} from '@expo/vector-icons';
 import PageContainer from '@/components/PageContainer';
 import Toast from 'react-native-toast-message';
 import * as WebBrowser from 'expo-web-browser';
 import Button from '@/components/ui/button';
 import {PaystackPayment} from '@/components/ui/PaystackPayment';
 import {router} from 'expo-router';
+import {Address, getUserAddresses} from '@/services/apis/address';
 
 export default function StoreScreen() {
 	const {setCart} = useGlobalStore();
 	const queryClient = useQueryClient();
 	const [paymentUrl, setPaymentUrl] = useState('');
+	const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+	const [showAddressModal, setShowAddressModal] = useState(false);
 
 	const {data: cartData, isLoading} = useQuery({
 		queryKey: ['cart'],
 		queryFn: getCart,
 		refetchOnWindowFocus: true,
+	});
+
+	const {data: addressesData, isSuccess: isAddressSuccess} = useQuery({
+		queryKey: ['addresses'],
+		queryFn: getUserAddresses,
 	});
 
 	const {mutate: updateQuantity} = useMutation({
@@ -89,6 +105,12 @@ export default function StoreScreen() {
 			queryClient.invalidateQueries({queryKey: ['cart']});
 		},
 	});
+
+	useEffect(() => {
+		if (isAddressSuccess && addressesData.data?.length) {
+			setSelectedAddress(addressesData.data[0]);
+		}
+	}, [isAddressSuccess]);
 
 	const handleQuantityChange = (
 		id: number,
@@ -227,6 +249,56 @@ export default function StoreScreen() {
 						</View>
 					</View>
 				))}
+				<View className="bg-white p-4 rounded-lg mb-4 shadow-sm">
+					<View className="flex-row justify-between items-center mb-3">
+						<Text className="font-poppins-semibold text-base">
+							Delivery Address
+						</Text>
+						<TouchableOpacity
+							onPress={() => setShowAddressModal(true)}
+							className="py-1 px-3 bg-gray-100 rounded-full"
+						>
+							<Text className="text-green-700 text-sm font-poppins-medium">
+								{selectedAddress ? 'Change' : 'Select'}
+							</Text>
+						</TouchableOpacity>
+					</View>
+
+					{selectedAddress ? (
+						<View className="flex-row items-start">
+							<MaterialIcons name="location-on" size={20} color="#6AAB85" />
+							<View className="ml-2 flex-1">
+								<Text className="font-poppins-medium">
+									{selectedAddress.attributes.recipient_name}
+								</Text>
+								<Text className="text-gray-600 text-sm">
+									{selectedAddress.attributes.address}
+								</Text>
+								<Text className="text-gray-600 text-sm">
+									{selectedAddress.attributes.city},{' '}
+									{selectedAddress.attributes.state}
+								</Text>
+								<Text className="text-gray-600 text-sm">
+									{selectedAddress.attributes.phone}
+								</Text>
+							</View>
+						</View>
+					) : (
+						<View className="items-center py-3">
+							<Text className="text-gray-500">No address selected</Text>
+						</View>
+					)}
+
+					<TouchableOpacity
+						onPress={() => router.push('/address')}
+						className="mt-3 py-2 flex-row justify-center items-center bg-gray-100 rounded-lg"
+					>
+						<Feather name="plus" size={16} color="#6AAB85" />
+						<Text className="ml-2 text-green-700 font-poppins-medium">
+							Add New Address
+						</Text>
+					</TouchableOpacity>
+				</View>
 			</ScrollView>
 
 			<View className="mt-4 rounded-xl">
@@ -246,17 +318,18 @@ export default function StoreScreen() {
 						₦{amountFormat(total)}
 					</Text>
 				</View>
-
-				<Button
-					title="Pay"
-					onPress={() =>
-						checkoutMutation({
-							callback_url: 'https://google.com',
-							user_address_id: 7,
-						})
-					}
-					isLoading={isCheckingOut}
-				/>
+				{selectedAddress && (
+					<Button
+						title="Pay"
+						onPress={() =>
+							checkoutMutation({
+								callback_url: 'https://google.com',
+								user_address_id: selectedAddress.id,
+							})
+						}
+						isLoading={isCheckingOut}
+					/>
+				)}
 				<PaystackPayment
 					isVisible={!!paymentUrl}
 					onSuccess={() => {
@@ -271,6 +344,96 @@ export default function StoreScreen() {
 					paymentUrl={paymentUrl}
 				/>
 			</View>
+			<Modal
+				visible={showAddressModal}
+				animationType="slide"
+				transparent={true}
+				onRequestClose={() => setShowAddressModal(false)}
+			>
+				<Pressable
+					onPress={() => setShowAddressModal(false)}
+					className="bg-[rgba(0,0,0,0.5)] flex-1 absolute top-0 right-0 left-0 bottom-0"
+				/>
+				<View className="flex-1 bg-black/50 justify-end">
+					<View className="bg-white rounded-t-3xl p-5 max-h-3/4">
+						<View className="flex-row justify-between items-center mb-4">
+							<Text className="text-lg font-poppins-semibold">
+								Select Delivery Address
+							</Text>
+							<TouchableOpacity onPress={() => setShowAddressModal(false)}>
+								<Ionicons name="close" size={24} color="black" />
+							</TouchableOpacity>
+						</View>
+
+						{addressesData?.data && addressesData.data.length > 0 ? (
+							<FlatList
+								data={addressesData.data}
+								keyExtractor={item => item.id.toString()}
+								renderItem={({item}) => (
+									<TouchableOpacity
+										className={`p-4 border border-gray-200 rounded-lg mb-3 ${
+											selectedAddress?.id === item.id
+												? 'bg-green-50 border-green-500'
+												: ''
+										}`}
+										onPress={() => {
+											setSelectedAddress(item);
+											setShowAddressModal(false);
+										}}
+									>
+										<View className="flex-row items-start">
+											<View className="h-5 w-5 rounded-full border-2 mr-2 items-center justify-center border-green-600">
+												{selectedAddress?.id === item.id && (
+													<View className="h-2.5 w-2.5 rounded-full bg-green-600" />
+												)}
+											</View>
+											<View className="flex-1">
+												<Text className="font-poppins-medium">
+													{item.attributes.recipient_name}
+												</Text>
+												<Text className="text-gray-600 text-sm">
+													{item.attributes.address}
+												</Text>
+												<Text className="text-gray-600 text-sm">
+													{item.attributes.city}, {item.attributes.state}
+												</Text>
+												<Text className="text-gray-600 text-sm">
+													{item.attributes.phone}
+												</Text>
+												{/* {item.attributes.is_default && (
+													<View className="bg-green-100 self-start px-2 py-0.5 rounded-full mt-1">
+														<Text className="text-xs text-green-700">
+															Default
+														</Text>
+													</View>
+												)} */}
+											</View>
+										</View>
+									</TouchableOpacity>
+								)}
+							/>
+						) : (
+							<View className="items-center py-10">
+								<MaterialIcons name="location-off" size={48} color="#6AAB85" />
+								<Text className="text-gray-500 mt-3">No addresses found</Text>
+							</View>
+						)}
+
+						<TouchableOpacity
+							onPress={() => {
+								setShowAddressModal(false);
+								router.push('/address');
+							}}
+							className="mt-3 py-3 flex-row justify-center items-center bg-green-50 rounded-lg"
+						>
+							<Feather name="plus" size={16} color="#6AAB85" />
+							<Text className="ml-2 text-green-700 font-poppins-medium">
+								Add New Address
+							</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+			</Modal>
 		</PageContainer>
 	);
 }

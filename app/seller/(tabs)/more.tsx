@@ -103,30 +103,30 @@ export default function MoreScreen() {
 				</View>
 			),
 		},
-		{
-			route: '/support',
-			title: 'Support',
-			sub: 'Report an issue',
-			icon: (
-				<View className="w-16 h-16 rounded-full bg-[#e4f5e5] flex items-center justify-center">
-					<MaterialIcons
-						name="contact-support"
-						size={40}
-						color={Colors.primary}
-					/>
-				</View>
-			),
-		},
-		{
-			route: '/address',
-			title: 'Address',
-			sub: 'Manage your addresses',
-			icon: (
-				<View className="w-16 h-16 rounded-full bg-[#e4f5e5] flex items-center justify-center">
-					<FontAwesome name="address-book" size={26} color={Colors.primary} />
-				</View>
-			),
-		},
+		// {
+		// 	route: '/support',
+		// 	title: 'Support',
+		// 	sub: 'Report an issue',
+		// 	icon: (
+		// 		<View className="w-16 h-16 rounded-full bg-[#e4f5e5] flex items-center justify-center">
+		// 			<MaterialIcons
+		// 				name="contact-support"
+		// 				size={40}
+		// 				color={Colors.primary}
+		// 			/>
+		// 		</View>
+		// 	),
+		// },
+		// {
+		// 	route: '/address',
+		// 	title: 'Address',
+		// 	sub: 'Manage your addresses',
+		// 	icon: (
+		// 		<View className="w-16 h-16 rounded-full bg-[#e4f5e5] flex items-center justify-center">
+		// 			<FontAwesome name="address-book" size={26} color={Colors.primary} />
+		// 		</View>
+		// 	),
+		// },
 		{
 			route: '/change-password',
 			title: 'Change password',

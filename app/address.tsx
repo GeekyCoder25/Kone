@@ -70,7 +70,6 @@ export default function AddressScreen() {
 		data: addressesData,
 		isLoading,
 		isError,
-		error,
 		refetch,
 	} = useQuery({
 		queryKey: ['addresses'],
@@ -249,35 +248,42 @@ export default function AddressScreen() {
 											</TouchableOpacity>
 										</View>
 									</View>
+									<View className="flex-row mt-3">
+										<MaterialIcons
+											name="location-on"
+											size={20}
+											color="#6AAB85"
+										/>
 
-									<View className="mt-3 ml-3">
-										<Text className="text-[#666] mb-1">
-											{address.attributes.address}
-										</Text>
-										<Text className="text-[#666] mb-1">
-											{address.attributes.city}, {address.attributes.state}{' '}
-											{address.attributes.postal_code}
-										</Text>
-										<Text className="text-[#666] mb-3">
-											{address.attributes.country}
-										</Text>
+										<View className="ml-3">
+											<Text className="text-[#666] mb-1">
+												{address.attributes.address}
+											</Text>
+											<Text className="text-[#666] mb-1">
+												{address.attributes.city}, {address.attributes.state}{' '}
+												{address.attributes.postal_code}
+											</Text>
+											<Text className="text-[#666] mb-3">
+												{address.attributes.country}
+											</Text>
 
-										{/* {address.attributes.is_default ? (
+											{/* {address.attributes.is_default ? (
 											<View className="bg-[#e4f5e5] self-start rounded-full px-3 py-1 mt-1">
-												<Text className="text-[#353535] font-poppins-medium text-xs">
-													Default Address
+                                            <Text className="text-[#353535] font-poppins-medium text-xs">
+                                            Default Address
 												</Text>
 											</View>
 										) : (
 											<TouchableOpacity
-												onPress={() => handleSetDefaultAddress(address.id)}
-												className="border border-[#ddd] self-start rounded-full px-3 py-1 mt-1"
+                                            onPress={() => handleSetDefaultAddress(address.id)}
+                                            className="border border-[#ddd] self-start rounded-full px-3 py-1 mt-1"
 											>
 												<Text className="text-[#666] font-poppins-medium text-xs">
-													Set as Default
+                                                Set as Default
 												</Text>
 											</TouchableOpacity>
 										)} */}
+										</View>
 									</View>
 								</View>
 							))}

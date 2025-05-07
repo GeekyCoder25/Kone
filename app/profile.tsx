@@ -31,7 +31,6 @@ const Profile = () => {
 		profile_photo: '',
 	});
 	const [profilePhoto, setProfilePhoto] = useState('');
-
 	const [error, setError] = useState({...formData, error: ''});
 	const [focusedInput, setFocusedInput] = useState('');
 	const [isUploading, setIsUploading] = useState(false);

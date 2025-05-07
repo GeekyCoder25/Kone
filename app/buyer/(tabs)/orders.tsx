@@ -135,16 +135,10 @@ export default function OrdersScreen() {
 	const orders = ordersData?.data || [];
 
 	return (
-		<PageContainer className="pt-2 pb-0 px-5">
-			<TouchableOpacity
-				className="flex-row items-center gap-x-3 mb-3"
-				onPress={router.back}
-			>
-				<FontAwesome6 name="chevron-left" size={16} color="#292D32" />
-				<Text className="text-[#353535] font-poppins-semibold text-lg">
-					My Orders
-				</Text>
-			</TouchableOpacity>
+		<PageContainer className="pb-0 px-5">
+			<Text className="text-[#353535] font-poppins-semibold text-lg">
+				My Orders
+			</Text>
 			<View className="flex-row items-center py-3 rounded-t-xl mb-4 gap-x-5">
 				<TouchableOpacity
 					className={`flex-row justify-center items-center gap-x-2 py-2 px-4 rounded-md ${
@@ -199,7 +193,7 @@ export default function OrdersScreen() {
 							: ['paid', 'cancelled'].includes(order.attributes.status)
 					)}
 					renderItem={renderOrderItem}
-					keyExtractor={item => item.id.toString()}
+					keyExtractor={item => item?.id.toString()}
 					contentContainerClassName="pb-4"
 					showsVerticalScrollIndicator={false}
 				/>
