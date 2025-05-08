@@ -62,7 +62,7 @@ export const updateUserAddress = async (
 };
 
 // Delete address
-export const deleteUserAddress = async (id: string): Promise<void> => {
+export const deleteUserAddress = async (id: string) => {
 	await axiosClient.delete(`/buyers/address/${id}`);
 };
 

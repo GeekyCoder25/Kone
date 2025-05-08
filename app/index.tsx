@@ -42,7 +42,7 @@ const Splash = () => {
 
 	return (
 		<View className="bg-primary flex-1 justify-center items-center">
-			<StatusBar hidden />
+			<StatusBar hidden style={Platform.OS === 'android' ? 'light' : 'dark'} />
 			<View className="relative w-1/2 h-1/2 justify-center items-center">
 				<Image
 					source={require('@/assets/images/splash-icon.png')}

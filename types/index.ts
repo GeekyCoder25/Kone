@@ -2,6 +2,7 @@ export interface User {
 	id: number;
 	name: string;
 	email: string;
+	wallet_balance: number;
 	email_verified_at: string;
 	ver_code: string | null;
 	status: number;

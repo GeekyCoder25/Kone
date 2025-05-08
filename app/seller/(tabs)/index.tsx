@@ -25,6 +25,7 @@ import {Colors} from '@/constants/Colors';
 
 export default function SellerDashboardScreen() {
 	const {user} = useGlobalStore();
+	const [revenueTimeFrame, setRevenueTimeFrame] = useState('This Month');
 	const [timeFrame, setTimeFrame] = useState('This Week');
 
 	const {data: salesData, isLoading: loadingSales} = useQuery({
@@ -100,7 +101,7 @@ export default function SellerDashboardScreen() {
 		const dataSource =
 			timeFrame === 'This Week'
 				? revenueData.data.revenue_stats.byWeek
-				: revenueData.data.revenue_stats.byMonth.slice(0, 6);
+				: revenueData.data.revenue_stats.byMonth;
 
 		return dataSource.map(item =>
 			typeof item.value === 'string'
@@ -151,19 +152,24 @@ export default function SellerDashboardScreen() {
 	const StatCard = ({
 		title,
 		value,
+		isCurrency,
 	}: {
 		title: string;
 		value: string | number;
+		isCurrency?: boolean;
 	}) => (
 		<ImageBackground
 			source={require('../../../assets/images/card-bg.jpg')}
-			className="flex-1 rounded-lg mr-3 p-4"
+			className="flex-1 rounded-lg mr-3 p-4 w-[150px]"
 		>
 			<View className="flex-row items-center mb-1">
 				<MaterialIcons name="check-circle-outline" size={16} color="#022711" />
 				<Text className="text-xs text-gray-700 ml-1">{title}</Text>
 			</View>
-			<Text className="text-2xl font-poppins-semibold">{value}</Text>
+			<Text className="text-2xl font-poppins-semibold">
+				{isCurrency && '₦'}
+				{value}
+			</Text>
 		</ImageBackground>
 	);
 
@@ -180,7 +186,7 @@ export default function SellerDashboardScreen() {
 	return (
 		<PageContainer>
 			<ScrollView showsVerticalScrollIndicator={false}>
-				<View className="flex-row justify-between items-center mb-6">
+				<View className="flex-row justify-between items-center mt-3 mb-6">
 					<View className="flex-row gap-x-3 items-center">
 						<TouchableOpacity onPress={() => router.push('/profile')}>
 							{user?.profile_photo ? (
@@ -204,7 +210,7 @@ export default function SellerDashboardScreen() {
 				</View>
 
 				{/* Stats Cards */}
-				<View className="flex-row mb-6">
+				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 					<StatCard
 						title="Total completed sale"
 						value={statsInfo.completed_sales.toLocaleString() || '0'}
@@ -213,31 +219,55 @@ export default function SellerDashboardScreen() {
 						title="In progress sale"
 						value={statsInfo.sales_in_progress || '0'}
 					/>
-				</View>
+					<StatCard
+						title="Total Money earned"
+						value={amountFormat(Number(statsInfo.total_earned || '0'))}
+						isCurrency
+					/>
+					<StatCard
+						title={`Money earned in ${new Date().toLocaleString('default', {
+							month: 'long',
+						})}`}
+						value={amountFormat(Number(statsInfo.earned_this_month || '0'))}
+						isCurrency
+					/>
+				</ScrollView>
 
 				{/* Revenue Chart */}
 				<View className="bg-white rounded-lg py-4 mb-6">
 					<View className="flex-row justify-between items-center mb-2">
-						<View>
-							<Text className="text-gray-500 text-sm">
-								Your total revenue so far
-							</Text>
-							<Text className="text-2xl font-poppins-semibold">
-								₦{amountFormat(parseFloat(statsInfo.total_earned) || 1250)}
-							</Text>
-						</View>
+						{revenueTimeFrame === 'All Time' ? (
+							<View>
+								<Text className="text-gray-500 text-sm">
+									Your total revenue so far
+								</Text>
+								<Text className="text-2xl font-poppins-semibold">
+									₦{amountFormat(parseFloat(statsInfo.total_earned) || 0)}
+								</Text>
+							</View>
+						) : (
+							<View>
+								<Text className="text-gray-500 text-sm">
+									Your total revenue this month
+								</Text>
+								<Text className="text-2xl font-poppins-semibold">
+									₦
+									{amountFormat(parseFloat(statsInfo.earned_this_month || '0'))}
+								</Text>
+							</View>
+						)}
 						<TimeFrameSelector
-							label={timeFrame}
+							label={revenueTimeFrame}
 							onPress={() => {
 								// Toggle between "This Week" and "This Month"
-								setTimeFrame(prev =>
-									prev === 'This Week' ? 'This Month' : 'This Week'
+								setRevenueTimeFrame(prev =>
+									prev === 'This Month' ? 'All Time' : 'This Month'
 								);
 							}}
 						/>
 					</View>
 
-					<LineChart
+					{/* <LineChart
 						data={revenueChartData}
 						width={screenWidth}
 						height={180}
@@ -252,7 +282,7 @@ export default function SellerDashboardScreen() {
 							marginVertical: 8,
 							borderRadius: 16,
 						}}
-					/>
+					/> */}
 				</View>
 
 				{/* Sales Performance */}

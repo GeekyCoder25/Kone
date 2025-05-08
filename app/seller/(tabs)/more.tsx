@@ -9,6 +9,7 @@ import {
 	FontAwesome,
 	FontAwesome6,
 	Ionicons,
+	MaterialCommunityIcons,
 	MaterialIcons,
 } from '@expo/vector-icons';
 import {useGlobalStore} from '@/context/store';
@@ -81,7 +82,9 @@ export default function MoreScreen() {
 			| '/buyer/wishlist'
 			| '/support'
 			| '/address'
-			| '/change-password';
+			| '/change-password'
+			| '/wallet'
+			| '/bank';
 		title: string | undefined;
 		sub: string | undefined;
 		icon: React.JSX.Element;
@@ -127,6 +130,30 @@ export default function MoreScreen() {
 		// 		</View>
 		// 	),
 		// },
+		{
+			route: '/wallet',
+			title: 'Wallet',
+			sub: 'Withdraw your earnings',
+			icon: (
+				<View className="w-16 h-16 rounded-full bg-[#e4f5e5] flex items-center justify-center">
+					<Ionicons name="wallet" size={26} color={Colors.primary} />
+				</View>
+			),
+		},
+		{
+			route: '/bank',
+			title: 'Bank Account',
+			sub: 'Manae your bank account details',
+			icon: (
+				<View className="w-16 h-16 rounded-full bg-[#e4f5e5] flex items-center justify-center">
+					<MaterialCommunityIcons
+						name="bank"
+						size={26}
+						color={Colors.primary}
+					/>
+				</View>
+			),
+		},
 		{
 			route: '/change-password',
 			title: 'Change password',

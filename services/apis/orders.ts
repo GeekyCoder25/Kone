@@ -59,7 +59,7 @@ const axiosClient = new AxiosClient();
 
 export const getOrders = async () => {
 	const response = await axiosClient.get<OrdersResponse>(
-		'/buyers/orders?include=items.product'
+		'/buyers/orders?include=items.seller,items.product'
 	);
 	return response.data;
 };
@@ -67,6 +67,16 @@ export const getOrders = async () => {
 export const checkout = async (payload: CheckoutPayload) => {
 	const response = await axiosClient.post<CheckoutPayload, CheckoutResponse>(
 		'/buyers/checkout',
+		payload
+	);
+	return response.data;
+};
+export const checkoutRepay = async (
+	orderId: string | number,
+	payload: CheckoutPayload
+) => {
+	const response = await axiosClient.post<CheckoutPayload, CheckoutResponse>(
+		`/buyers/checkout-repay/${orderId}`,
 		payload
 	);
 	return response.data;

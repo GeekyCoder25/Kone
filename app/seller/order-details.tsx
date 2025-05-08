@@ -6,6 +6,7 @@ import {
 	ActivityIndicator,
 	TouchableOpacity,
 	Modal,
+	Linking,
 } from 'react-native';
 import {router, useLocalSearchParams} from 'expo-router';
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
@@ -379,11 +380,19 @@ export default function OrderDetails() {
 
 					{/* Action Buttons */}
 					<View className="flex-row gap-x-3 mb-8">
-						<TouchableOpacity className="flex-1 bg-emerald-600 py-3 rounded-lg items-center justify-center flex-row">
+						<TouchableOpacity
+							className="flex-1 bg-emerald-600 py-3 rounded-lg items-center justify-center flex-row"
+							onPress={() => router.push(`/receipt?id=${order.id}`)}
+						>
 							<Ionicons name="print-outline" size={18} color="white" />
-							<Text className="text-white font-medium ml-2">Print Invoice</Text>
+							<Text className="text-white font-medium ml-2">View Receipt</Text>
 						</TouchableOpacity>
-						<TouchableOpacity className="flex-1 bg-gray-200 py-3 rounded-lg items-center justify-center flex-row">
+						<TouchableOpacity
+							className="flex-1 bg-gray-200 py-3 rounded-lg items-center justify-center flex-row"
+							onPress={() =>
+								Linking.openURL(`tel:/${order.buyer_address.attributes.phone}`)
+							}
+						>
 							<Ionicons name="chatbox-outline" size={18} color="#4B5563" />
 							<Text className="text-gray-700 font-medium ml-2">
 								Contact Buyer

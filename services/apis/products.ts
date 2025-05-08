@@ -80,6 +80,51 @@ export interface WishlistResponse {
 	data: [];
 }
 
+// Types for Category Response
+export interface CategoryAttribute {
+	name: string;
+	slug: string;
+	description: string;
+	image: string | null;
+}
+
+export interface CategoryItem {
+	type: string;
+	id: number;
+	attributes: CategoryAttribute;
+}
+
+export interface CategoriesResponse {
+	status: number;
+	message: string;
+	data: CategoryItem[];
+}
+
+// Types for Product
+export interface ProductData {
+	name: string;
+	description?: string;
+	price: number;
+	stock_quantity: number;
+	unit: string;
+	category_id: number | string;
+	thumbnail: File | FormData | any;
+	images?: File[] | FormData | any;
+}
+
+export interface ProductResponse {
+	status: number;
+	message: string;
+	data: any; // Update with specific product response structure if available
+}
+
+export const getCategories = async () => {
+	const response = await axiosClient.get<CategoriesResponse>(
+		'/generals/product-categories'
+	);
+	return response.data;
+};
+
 export const getProducts = async () => {
 	const response = await axiosClient.get<ProductsResponse>(
 		'/generals/products'

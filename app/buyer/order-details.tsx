@@ -1,21 +1,67 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, ScrollView, Image, ActivityIndicator} from 'react-native';
 import {Text} from '@/components/ui/Text';
-import {useQuery} from '@tanstack/react-query';
-import {getOrders, Order} from '@/services/apis/orders';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {
+	checkout,
+	checkoutRepay,
+	getOrders,
+	Order,
+} from '@/services/apis/orders';
 import PageContainer from '@/components/PageContainer';
 import {FontAwesome6, MaterialCommunityIcons} from '@expo/vector-icons';
 import {Colors} from '@/constants/Colors';
 import {TouchableOpacity} from 'react-native';
 import {router, useLocalSearchParams} from 'expo-router';
 import {amountFormat} from '@/utils';
+import Button from '@/components/ui/button';
+import Toast from 'react-native-toast-message';
+import {PaystackPayment} from '@/components/ui/PaystackPayment';
+import {Address, getUserAddresses} from '@/services/apis/address';
+import SelectAddressModal from '@/components/SelectAddressModal';
 
 const OrderDetails = () => {
 	const {id} = useLocalSearchParams<{id: string}>();
+	const queryClient = useQueryClient();
+	const [paymentUrl, setPaymentUrl] = useState('');
+	const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+	const [showAddressModal, setShowAddressModal] = useState(false);
 
 	const {data: ordersData, isLoading} = useQuery({
 		queryKey: ['orders'],
 		queryFn: getOrders,
+	});
+
+	const {data: addressesData, isSuccess} = useQuery({
+		queryKey: ['addresses'],
+		queryFn: getUserAddresses,
+	});
+
+	const {mutate: checkoutMutation, isPending: isCheckingOut} = useMutation({
+		mutationFn: () =>
+			checkoutRepay(order?.id || '', {
+				callback_url: 'https://google.com',
+				user_address_id: selectedAddress?.id || 0,
+			}),
+		onSuccess: async data => {
+			try {
+				setPaymentUrl(data.data.payment_url);
+			} catch (error) {
+				Toast.show({
+					type: 'error',
+					text1: 'Failed to open payment page',
+					text2: 'Please try again',
+				});
+			}
+		},
+		onError: (error: any) => {
+			Toast.show({
+				type: 'error',
+				text1: 'Checkout Failed',
+				text2: error.response?.data?.message || error.message,
+			});
+			queryClient.invalidateQueries({queryKey: ['cart']});
+		},
 	});
 
 	const order = ordersData?.data.find(order => order.id === Number(id));
@@ -167,6 +213,36 @@ const OrderDetails = () => {
 					</View>
 				</View>
 			</ScrollView>
+			{order.attributes.status === 'pending' && (
+				<View className="py-10">
+					<Button
+						title="Pay Now"
+						onPress={() =>
+							!selectedAddress ? setShowAddressModal(true) : checkoutMutation()
+						}
+					/>
+				</View>
+			)}
+			<PaystackPayment
+				isVisible={!!paymentUrl}
+				onSuccess={() => {
+					setPaymentUrl('');
+					router.navigate('/buyer/(tabs)/orders');
+					queryClient.invalidateQueries({queryKey: ['orders']});
+				}}
+				onClose={() => {
+					setPaymentUrl('');
+					queryClient.invalidateQueries({queryKey: ['cart']});
+				}}
+				paymentUrl={paymentUrl}
+			/>
+			<SelectAddressModal
+				showModal={showAddressModal}
+				setShowModal={setShowAddressModal}
+				selectedAddress={selectedAddress}
+				setSelectedAddress={setSelectedAddress}
+				addressesData={addressesData}
+			/>
 		</PageContainer>
 	);
 };
