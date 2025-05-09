@@ -361,27 +361,43 @@ export default function DashboardScreen() {
 			numColumns
 	);
 
+	const getGreeting = () => {
+		const hour = new Date().getHours();
+		if (hour < 12) {
+			return 'Good morning';
+		} else if (hour < 18) {
+			return 'Good afternoon';
+		} else {
+			return 'Good evening';
+		}
+	};
+
 	return (
 		<PageContainer className="pb-0">
 			<View>
-				<View className="flex-row gap-x-3 items-center">
-					<TouchableOpacity onPress={() => router.push('/profile')}>
-						{user?.profile_photo ? (
-							<Image
-								source={{uri: user.profile_photo}}
-								width={40}
-								height={40}
-								className="rounded-full"
-							/>
-						) : (
-							<View className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
-								<MaterialIcons name="person" size={20} color="#fff" />
-							</View>
-						)}
+				<View className="flex-row justify-between items-center mt-2 mb-6">
+					<View className="flex-row gap-x-3 items-center">
+						<TouchableOpacity onPress={() => router.push('/profile')}>
+							{user?.profile_photo ? (
+								<Image
+									source={{uri: user.profile_photo}}
+									width={40}
+									height={40}
+									className="rounded-full"
+								/>
+							) : (
+								<View className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
+									<MaterialIcons name="person" size={20} color="#fff" />
+								</View>
+							)}
+						</TouchableOpacity>
+						<Text className="text-xl font-poppins-semibold">
+							{getGreeting()}, {user?.name}!
+						</Text>
+					</View>
+					<TouchableOpacity onPress={() => router.push('/notifications')}>
+						<MaterialIcons name="notifications-none" size={24} color="#333" />
 					</TouchableOpacity>
-					<Text className="text-xl font-poppins-semibold">
-						Good morning, {user?.name}!
-					</Text>
 				</View>
 
 				<View
