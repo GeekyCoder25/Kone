@@ -15,7 +15,13 @@
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/images/adaptive-icon.png",
 				"backgroundColor": "#077433"
-			}
+			},
+			"package": "com.kone.app"
+		},
+		"androidNavigationBar": {
+			"visible": "leanback",
+			"barStyle": "dark-content",
+			"backgroundColor": "#ffffff"
 		},
 		"web": {
 			"bundler": "metro",
@@ -51,6 +57,14 @@
 		],
 		"experiments": {
 			"typedRoutes": true
+		},
+		"extra": {
+			"router": {
+				"origin": false
+			},
+			"eas": {
+				"projectId": "80490aca-3980-4af6-a20b-d7bb749e4bc5"
+			}
 		}
 	}
 }

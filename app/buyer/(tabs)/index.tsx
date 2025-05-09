@@ -7,10 +7,13 @@ import {
 	TouchableOpacity,
 	ActivityIndicator,
 	FlatList,
-	Pressable,
 } from 'react-native';
 import {Text} from '@/components/ui/Text';
-import {MaterialCommunityIcons, MaterialIcons} from '@expo/vector-icons';
+import {
+	FontAwesome5,
+	MaterialCommunityIcons,
+	MaterialIcons,
+} from '@expo/vector-icons';
 import {amountFormat} from '@/utils';
 import {useGlobalStore} from '@/context/store';
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
@@ -99,53 +102,154 @@ export default function DashboardScreen() {
 			name: 'All',
 			icon: (
 				<MaterialIcons
-					name={'food-bank'}
-					size={16}
+					name="category"
+					size={20}
 					color={selectedCategory === 'All' ? '#fff' : '#022711'}
 				/>
 			),
 		},
 		{
 			id: 1,
-			name: 'Livestock',
-			icon: (
-				<MaterialIcons
-					name={'pets'}
-					size={16}
-					color={selectedCategory === 'Livestock' ? '#fff' : '#022711'}
-				/>
-			),
-		},
-		{
-			id: 2,
 			name: 'Fruits',
 			icon: (
 				<MaterialCommunityIcons
-					name={'fruit-watermelon'}
-					size={16}
+					name="fruit-cherries"
+					size={20}
 					color={selectedCategory === 'Fruits' ? '#fff' : '#022711'}
 				/>
 			),
 		},
 		{
-			id: 3,
-			name: 'Tubers & Roots',
+			id: 2,
+			name: 'Vegetables',
 			icon: (
-				<MaterialIcons
-					name={'grass'}
-					size={16}
-					color={selectedCategory === 'Tubers & Roots' ? '#fff' : '#022711'}
+				<MaterialCommunityIcons
+					name="food-apple"
+					size={20}
+					color={selectedCategory === 'Vegetables' ? '#fff' : '#022711'}
+				/>
+			),
+		},
+		{
+			id: 3,
+			name: 'Dairy Products',
+			icon: (
+				<FontAwesome5
+					name="cheese"
+					size={20}
+					color={selectedCategory === 'Dairy Products' ? '#fff' : '#022711'}
 				/>
 			),
 		},
 		{
 			id: 4,
-			name: 'Dairy Products',
+			name: 'Livestock',
 			icon: (
-				<MaterialIcons
-					name={'egg'}
-					size={16}
-					color={selectedCategory === 'Dairy Products' ? '#fff' : '#022711'}
+				<MaterialCommunityIcons
+					name="cow"
+					size={20}
+					color={selectedCategory === 'Livestock' ? '#fff' : '#022711'}
+				/>
+			),
+		},
+		{
+			id: 5,
+			name: 'Grains & Cereals',
+			icon: (
+				<MaterialCommunityIcons
+					name="grain"
+					size={20}
+					color={selectedCategory === 'Grains & Cereals' ? '#fff' : '#022711'}
+				/>
+			),
+		},
+		{
+			id: 6,
+			name: 'Tubers & Roots',
+			icon: (
+				<MaterialCommunityIcons
+					name="carrot"
+					size={20}
+					color={selectedCategory === 'Tubers & Roots' ? '#fff' : '#022711'}
+				/>
+			),
+		},
+		{
+			id: 7,
+			name: 'Poultry',
+			icon: (
+				<MaterialCommunityIcons
+					name="turkey"
+					size={20}
+					color={selectedCategory === 'Poultry' ? '#fff' : '#022711'}
+				/>
+			),
+		},
+		{
+			id: 8,
+			name: 'Herbs & Spices',
+			icon: (
+				<FontAwesome5
+					name="mortar-pestle"
+					size={20}
+					color={selectedCategory === 'Herbs & Spices' ? '#fff' : '#022711'}
+				/>
+			),
+		},
+		{
+			id: 9,
+			name: 'Honey & Bee Products',
+			icon: (
+				<MaterialCommunityIcons
+					name="bee"
+					size={20}
+					color={
+						selectedCategory === 'Honey & Bee Products' ? '#fff' : '#022711'
+					}
+				/>
+			),
+		},
+		{
+			id: 10,
+			name: 'Nuts & Seeds',
+			icon: (
+				<FontAwesome5
+					name="seedling"
+					size={20}
+					color={selectedCategory === 'Nuts & Seeds' ? '#fff' : '#022711'}
+				/>
+			),
+		},
+		{
+			id: 11,
+			name: 'Aquaculture',
+			icon: (
+				<FontAwesome5
+					name="fish"
+					size={20}
+					color={selectedCategory === 'Aquaculture' ? '#fff' : '#022711'}
+				/>
+			),
+		},
+		{
+			id: 12,
+			name: 'Organic Procedure',
+			icon: (
+				<MaterialCommunityIcons
+					name="leaf"
+					size={20}
+					color={selectedCategory === 'Organic Procedure' ? '#fff' : '#022711'}
+				/>
+			),
+		},
+		{
+			id: 13,
+			name: 'Animal Feed',
+			icon: (
+				<MaterialCommunityIcons
+					name="food-variant"
+					size={20}
+					color={selectedCategory === 'Animal Feed' ? '#fff' : '#022711'}
 				/>
 			),
 		},
@@ -271,7 +375,7 @@ export default function DashboardScreen() {
 							/>
 						) : (
 							<View className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
-								<MaterialIcons name="person" size={24} color="#fff" />
+								<MaterialIcons name="person" size={20} color="#fff" />
 							</View>
 						)}
 					</TouchableOpacity>
@@ -303,7 +407,7 @@ export default function DashboardScreen() {
 					/>
 					{searchQuery && (
 						<TouchableOpacity onPress={() => setSearchQuery('')}>
-							<MaterialIcons name="close" size={24} color="#848484" />
+							<MaterialIcons name="close" size={20} color="#848484" />
 						</TouchableOpacity>
 					)}
 				</View>
