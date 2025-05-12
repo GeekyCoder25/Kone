@@ -131,19 +131,9 @@ export default function MoreScreen() {
 		// 	),
 		// },
 		{
-			route: '/wallet',
-			title: 'Wallet',
-			sub: 'Withdraw your earnings',
-			icon: (
-				<View className="w-16 h-16 rounded-full bg-[#e4f5e5] flex items-center justify-center">
-					<Ionicons name="wallet" size={26} color={Colors.primary} />
-				</View>
-			),
-		},
-		{
 			route: '/bank',
 			title: 'Bank Account',
-			sub: 'Manae your bank account details',
+			sub: 'Manage your bank account details',
 			icon: (
 				<View className="w-16 h-16 rounded-full bg-[#e4f5e5] flex items-center justify-center">
 					<MaterialCommunityIcons
