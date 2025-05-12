@@ -401,7 +401,7 @@ export default function DashboardScreen() {
 				</View>
 
 				<View
-					className={`mt-2 flex-row items-center bg-[#f3f6f4] rounded-xl px-4 py-1 border ${
+					className={`mt-1 flex-row items-center bg-[#f3f6f4] rounded-xl px-4 py-1 border ${
 						searchFocused ? 'border-primary' : 'border-[#67B179]'
 					}`}
 				>
